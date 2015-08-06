@@ -1,0 +1,15 @@
+UNIX interface
+  due today
+  due tomorrow | --use ` date +
+  %D ' to match with dates in tuples (along with query by date)
+week view      /
+
+subtasks which define how tasks are implemented and completed
+  create a new table subtasks with the following schema:
+
+  subtask:
+    task
+    subtask
+    priority
+    description
+
