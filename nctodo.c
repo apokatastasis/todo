@@ -5,8 +5,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "db.h"
-#include "interface.h"
-#include "misc.h"
+#include "util.h"
 
 int main(int argc, char **argv) 
 {
@@ -16,7 +15,7 @@ int main(int argc, char **argv)
 	struct sqlite3 *database;
 	int ch, count, cmdArgc;
 
-	database = initConn("/home/casey/share/db/todo/todo.db");
+	database = initConn("/home/casey/share/lib/db/todo/todo.db");
 	if(database == NULL)
 	{
 		fprintf(stderr, "%s: database path cannot be opened\n", argv[0]);
@@ -34,36 +33,31 @@ int main(int argc, char **argv)
 
 		for(count = 0; (ch = getch()) != '\n'; count++)
 		{
-			str = realloc(str, sizeof(char) * (count + 2));
+			char *tmp;
+			if((tmp = realloc(str, sizeof(char) * (count + 2))) == NULL)
+				perror("");
+			else
+				str = tmp;
+
 			str[count] = ch;
 			addch(ch);
 		}
 		str[count] = '\0';
 
 		if(str[0] == ':')
-		{
 			cmd = str++;
-		}
 		else
-		{
 			cmd = str;
-		}
 
 		if(!strcmp(cmd, "quit"))
-		{
 			break;
-		}
 		else if(!strcmp(cmd, "page"))
 		{
-			cmdArgv = split(cmd, " ", &cmdArgc);
+			cmdArgv = split(cmd, " ", &cmdArgc, 0);
 			if(cmdArgc == 2)
-			{
-				pagercmd(cmdArgv[1]);
-			}
+				pagercmd(cmdArgv[1], 0);
 			else
-			{
 				printw("Invalid number of args");
-			}
 			refresh();
 		}    
 
